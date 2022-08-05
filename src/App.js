@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import styles from "./App.modules.css";
+import "./App.css";
 
 const App = () => {
   const apiKey = "3eec5ad16314fee19e27c07aa9ce96af";
   const [weatherData, setWeatherdata] = useState([{}]);
   const [city, setCity] = useState("");
+  const [weatherLogo, setWeatherLogo] = useState("");
 
   const cityHandler = (e) => {
     setCity(e.target.value);
   };
 
-  const getWeather = (event) => {
+  const getWeather = () => {
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`
     )
@@ -18,14 +19,17 @@ const App = () => {
       .then((data) => {
         console.log(data);
         setWeatherdata(data);
+        var logoUrl =
+          "http://openweathermap.org/img/w/" + data.weather[0].icon + ".png";
+        setWeatherLogo(logoUrl);
       });
   };
   return (
     <>
       <div className="col-sm-12 col-md-12 col-lg-12">
-        <div className="mx-4 mt-4" style={{ height: "100vh" }}>
+        <div className="mx-4 mt-4">
           <div className="row">
-            <div className="input-group mb-3" style={{ width: "30%" }}>
+            <div className="mb-3 inputalign">
               <input
                 type="text"
                 className="form-control"
@@ -46,60 +50,98 @@ const App = () => {
               </button>
             </div>
           </div>
-          <div className="row mt-4">
-            <div className="col-md-4 col-sm-4 col-lg-4">
-              <div style={{ textAlign: "center" }}>
-                <h1>React Weather Website</h1>
-                <p>
-                  Welcome to weather app! Enter in a city to get the weather
-                </p>
+          <div className="container">
+            <div className="row mt-4">
+              <div className="col-md-4 col-sm-4 col-lg-4 intro">
+                <div style={{ textAlign: "left" }}>
+                  <p className="intro">Weather Website</p>
+                  <p>
+                    Welcome to weather app! Enter in a city to get the weather
+                  </p>
+                </div>
               </div>
+              {typeof weatherData.main === "undefined" ? (
+                <div
+                  className="col-sm-4 col-md-4 col-lg-4"
+                  style={{ textAlign: "center" }}
+                >
+                  <h2>City</h2>
+                  <p>-</p>
+                  <h2>Temperature (&deg;C)</h2>
+                  <p>-</p>
+                  <h2>Weather</h2>
+                  <p>-</p>
+                </div>
+              ) : (
+                <div
+                  className="col-sm-4 col-md-4 col-lg-4"
+                  style={{ textAlign: "center" }}
+                >
+                  <h3>Place</h3>
+                  <p>{weatherData.name}</p>
+                  <h3>Temperature (&deg;C)</h3>
+                  <p>{weatherData.main.temp} &deg;C</p>
+                  <h3>Weather</h3>
+                  <p>{weatherData.weather[0].main}</p>
+                  <img src={weatherLogo} height="80" width="80"></img>
+                </div>
+              )}
+              {typeof weatherData.main === "undefined" ? (
+                <div
+                  className="col-sm-4 col-md-4 col-lg-4"
+                  style={{ textAlign: "center" }}
+                >
+                  <h2>Other Info</h2>
+                  <div className="row mt-4">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Wind Speed</h4>
+                      <p>-</p>
+                    </div>
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Hudmidity</h4>
+                      <p>-</p>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Min Temperature</h4>
+                      <p>-</p>
+                    </div>
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Max Temperature</h4>
+                      <p>-</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="col-sm-4 col-md-4 col-lg-4"
+                  style={{ textAlign: "center" }}
+                >
+                  <h2>Other Info</h2>
+                  <div className="row mt-4">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Wind Speed</h4>
+                      <p>{weatherData.wind.speed} km/h</p>
+                    </div>
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Hudmidity</h4>
+                      <p>{weatherData.main.humidity} %</p>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Min Temperature</h4>
+                      <p>{weatherData.main.temp_min} &deg;C</p>
+                    </div>
+                    <div className="col-sm-6 col-md-6 col-lg-6">
+                      <h4>Max Temperature</h4>
+                      <p>{weatherData.main.temp_max} &deg;C</p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            {typeof weatherData.main === "undefined" ? (
-              <div
-                className="col-sm-4 col-md-4 col-lg-4"
-                style={{ textAlign: "center" }}
-              >
-                <h2>City</h2>
-                <p>-</p>
-                <h2>Temperature (&deg;C)</h2>
-                <p>-</p>
-                <h2>Weather</h2>
-                <p>-</p>
-              </div>
-            ) : (
-              <div
-                className="col-sm-4 col-md-4 col-lg-4"
-                style={{ textAlign: "center" }}
-              >
-                <h2>Place</h2>
-                <p>{weatherData.name}</p>
-                <h2>Temperature (&deg;C)</h2>
-                <p>{Math.round(weatherData.main.temp)} &deg;C</p>
-                <h2>Weather</h2>
-                <p>{weatherData.weather[0].main}</p>
-              </div>
-            )}
-            {typeof weatherData.main === "undefined" ? (
-              <div
-                className="col-sm-4 col-md-4 col-lg-4"
-                style={{ textAlign: "center" }}
-              >
-                <h2>Other </h2>
-              </div>
-            ) : (
-              <div
-                className="col-sm-4 col-md-4 col-lg-4"
-                style={{ textAlign: "center" }}
-              >
-                <h2>Place</h2>
-                <p>{weatherData.name}</p>
-                <h2>Temperature (&deg;C)</h2>
-                <p>{Math.round(weatherData.main.temp)} &deg;C</p>
-                <h2>Weather</h2>
-                <p>{weatherData.weather[0].main}</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
